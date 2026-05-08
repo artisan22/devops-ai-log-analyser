@@ -21,7 +21,7 @@ Reads a log file line by line, filters out prompt injection attempts, then sends
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/your-username/devops-ai-log-analyser.git
+git clone https://github.com/artisan22/devops-ai-log-analyser
 cd devops-ai-log-analyser
 
 # 2. Start Ollama
