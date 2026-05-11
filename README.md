@@ -7,6 +7,7 @@ AI-powered server log analyser that explains logs in plain English using a self-
 ## What it does
 
 Reads a log file line by line, filters out prompt injection attempts, then sends each safe line to a local LLM and prints a plain-English explanation. No data leaves your machine.
+Sends Slack alerts automatically when ERROR lines are detected.
 
 ---
 
@@ -14,6 +15,7 @@ Reads a log file line by line, filters out prompt injection attempts, then sends
 
 - [Docker](https://docs.docker.com/get-docker/) (for Ollama)
 - Python 3.8+
+- Slack webhook URL (optional, for alerts)
 
 ---
 
@@ -53,6 +55,11 @@ python analyser.py app.log --model llama3.1
 
 # Connect to a remote Ollama instance
 python analyser.py app.log --ollama-url http://192.168.1.10:11434
+
+# Enable Slack alerts for ERROR lines
+export SLACK_WEBHOOK_URL="https://hooks.slack.com/services/xxx/yyy/zzz"
+python analyser.py sample.log
+
 ```
 
 ### Options
@@ -62,6 +69,9 @@ python analyser.py app.log --ollama-url http://192.168.1.10:11434
 | `log_file` | `sample.log` | Path to the log file to analyse |
 | `--model` | `llama3.2` | Ollama model to use |
 | `--ollama-url` | `http://localhost:11434` | Ollama base URL |
+| `SLACK_WEBHOOK_URL` | unset | Slack webhook URL (set as environment variable) |
+| `--watch` | false | Watch file in real time instead of reading once |
+
 
 ---
 
