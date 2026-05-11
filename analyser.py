@@ -3,6 +3,7 @@ import sys
 import re
 import time
 import requests
+import os
 
 # Guardrail 1 — known attack patterns
 DANGEROUS_PATTERNS = [
@@ -30,6 +31,13 @@ def parse_log(log_line):
         "level": parts[2],
         "message": " ".join(parts[3:])
     }
+
+def send_slack_alert(message):
+    url = os.environ.get("SLACK_WEBHOOK_URL")
+    response = requests.post(
+        url,
+        json= {"text": message}
+    )
 
 def analyse_log(log_line, model, ollama_url):
     prompt = f"""You are a log analyser. Only explain server logs in plain English.
@@ -136,9 +144,13 @@ def main():
                 print(f"⏭️  Skipping INFO line")
                 continue
 
+
             if is_safe(line):
                 explanation = analyse_log(line, args.model, args.ollama_url)
                 print(f"🤖 ANALYSIS: {explanation}")
+
+                if parsed["level"] == "ERROR":
+                    send_slack_alert(f"🚨 ERROR detected: {explanation}")
             print("-" * 60)
 
 if __name__ == "__main__":
